@@ -1,8 +1,8 @@
 # LLM 기반 제품 리뷰 Opinion Unit 추출
 
-본 레포지토리 전체 실험 가운데 **리뷰 입력부터 Opinion Units 추출까지**를 다룹니다. 정규화 및 계층적 군집화 과정을 포함한 전체 실험은 embedding_clustering_experiment에서 확인할 수 있습니다.
+본 레포지토리 전체 실험 가운데 **리뷰 입력부터 Opinion Units 추출까지**를 다룹니다. 정규화 및 계층적 군집화 과정을 포함한 전체 실험은 [embedding_clustering_experiment](https://github.com/Experience-Driven-Product-Catalog/embedding_clustering_experiment)에서 확인할 수 있습니다.
 
-본 README에 존재하는 내용은 embedding_clustering_experiment의 README와 중복된 내용입니다.
+본 README에 존재하는 내용은 [embedding_clustering_experiment](https://github.com/Experience-Driven-Product-Catalog/embedding_clustering_experiment)의 README와 중복된 내용입니다.
 
 ## 문제 정의
 
