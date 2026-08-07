@@ -1,0 +1,21 @@
+[project]
+name = "extract-attribute"
+version = "0.1.0"
+description = "Extract sentiment-aware attributes from Korean product reviews with Codex CLI"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=7.3.0",
+    "pandas>=3.0.5",
+    "pyarrow>=25.0.0",
+    "pyyaml>=6.0.3",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+

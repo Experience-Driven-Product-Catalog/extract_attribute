@@ -1,0 +1,27 @@
+codex_extraction:
+  model: gpt-5.6-luna
+  model_reasoning_effort: high
+  max_workers: 4
+  timeout_seconds: 600
+  progress_log_interval: 25
+
+opinion_units:
+  prompt_path: prompt/opinion_units.md
+  input_parquet: monitor_reviews.parquet
+  output_parquet: monitor_opinion_units.parquet
+  codex_results_dir: codex_results/opinion_units
+  product_category: 모니터
+
+representative_attribute:
+  prompt_path: prompt/representative_attribute.md
+  input_parquet: monitor_reviews.parquet
+  output_parquet: monitor_representative_attributes.parquet
+  codex_results_dir: codex_results/representative_attribute
+  product_category: 모니터
+
+build_computer_review_dataset:
+  archive_dirs:
+    - origin_dataset/Training/02.라벨링데이터
+    - origin_dataset/Validation/02.라벨링데이터
+  result_path: monitor_reviews.parquet
+  sample_count: 2000
