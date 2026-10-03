@@ -1,6 +1,6 @@
 # LLM 기반 제품 리뷰 Opinion Unit 추출
 
-본 레포지토리 전체 실험 가운데 **리뷰 입력부터 Opinion Units 추출까지**를 다룹니다. 정규화 및 계층적 군집화 과정을 포함한 전체 실험은 [embedding_clustering_experiment](https://github.com/Experience-Driven-Product-Catalog/embedding_clustering_experiment)에서 확인할 수 있습니다.
+본 레포지토리는 전체 실험 가운데 **리뷰 입력부터 Opinion Units 추출까지**를 다룹니다. 전체 실험에는 정규화 및 계층적 군집화 과정도 포함됩니다. [embedding_clustering_experiment](https://github.com/Experience-Driven-Product-Catalog/embedding_clustering_experiment)에서 확인할 수 있습니다.
 
 본 README에 존재하는 내용은 [embedding_clustering_experiment](https://github.com/Experience-Driven-Product-Catalog/embedding_clustering_experiment)의 README와 중복된 내용입니다.
 
@@ -13,7 +13,7 @@
 * 동일한 내용을 서로 다른 속성으로 표현할 수 있습니다.
 * 속성만으로는 사용자가 실제로 무엇을 경험했는지 충분히 설명하기 어렵습니다.
 * 감성 판단이 리뷰의 어떤 표현에 근거하는지 추적하기 어렵습니다.
-* 하나의 리뷰에 포함된 여러 관찰과 평가가 하나의 속성으로 합쳐질 수 있습니다.
+* 하나의 리뷰는 여러 관찰과 평가를 포함합니다. 이들이 하나의 속성으로 합쳐질 수 있습니다.
 
 따라서 본 프로젝트에서는 단순한 `attribute + sentiment` 추출 대신, 리뷰의 개별 관찰과 평가를 **독립적으로 해석 가능한 최소 단위**로 구조화하는 방법을 검증합니다.
 
@@ -21,7 +21,7 @@
 
 본 프로젝트의 추출 방식은 [Opinion Units](https://aclanthology.org/2025.nodalida-1.24.pdf)를 기반으로 합니다.
 
-기존 Opinion Units 연구에서는 Aspect와 Sentiment뿐 아니라 판단의 근거가 되는 원문의 `excerpt`를 함께 추출하고, 프롬프트가 **원자성, 단사성, 완전성, 맥락성**을 준수하도록 설계합니다.
+기존 Opinion Units 연구에서는 Aspect와 Sentiment뿐 아니라 원문의 `excerpt`도 함께 추출해 판단의 근거로 삼습니다. 프롬프트는 **원자성, 단사성, 완전성, 맥락성**을 준수하도록 설계합니다.
 
 본 프로젝트에서는 여기에 `status`와 `opinion`을 추가하여 하나의 Opinion Unit을 다음 다섯 개 필드로 구성했습니다.
 
@@ -29,19 +29,19 @@
 | ------------ | ---------------------------------------------------------------- |
 | `raw_aspect` | 평가하거나 관찰한 제품의 구체적인 속성, 구성 요소 또는 경험 결과                            |
 | `raw_status` | 해당 `raw_aspect`의 상태, 경험, 조건, 현상 또는 값                             |
-| `excerpt`    | Opinion Unit의 근거가 되는 리뷰 원문의 정확하고 연속된 문자열                         |
-| `opinion`    | 맥락·비교·정도·결과·불확실성을 보존하여 관찰이나 평가를 정리한 문장                           |
+| `excerpt`    | 정확하고 연속된 문자열. 리뷰 원문에 있으며 Opinion Unit의 근거                         |
+| `opinion`    | 관찰이나 평가를 정리합니다. 맥락·비교·정도·결과·불확실성을 보존한 문장                           |
 | `sentiment`  | `positive`, `negative`, `mixed`, `neutral`, `unknown` 중 하나의 감성 값 |
 
 정규화 이전의 속성임을 명시하기 위해 `aspect`와 `status`에는 각각 `raw_` 접두사를 사용합니다.
 
-## Extraction 
+## Extraction
 
 - 실험에는 AI Hub의 [속성 기반 감정 분석 데이터](https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=data&dataSetSn=71603)를 사용했습니다.
     - 이 중 TV/모니터 상품 9종을 선정하여 총 749개의 리뷰를 추출하였습니다.
 - 구조화 및 비구조화 추출에 `GPT 5.6 Luna - High` 를 `codex_cli`를 통해 호출해 사용했습니다.
 - 추출에 사용된 구조화 및 비구조화 프롬프트는 `prompt` 경로에서 확인할 수 있습니다.
-- 추출 결과 749개의 리뷰를 통해 비구조화 프롬프트를 통해 2,352개, 구조화(Opinion Units) 프롬프트를 통해 2,583개의 속성을 추출하였습니다.
+- 추출 결과 749개의 리뷰를 통해 비구조화 프롬프트로 2,352개, 구조화(Opinion Units) 프롬프트로 2,583개의 속성을 추출하였습니다.
 
 
 ## Cost
@@ -50,7 +50,7 @@
 
 - 2026년 8월 6일 기준 1498개의 리뷰에서 속성을 추출하는데 원화 735원이 소모되었습니다.
 - 전체 입력 토큰의 95.23%가 평균적으로 캐싱되었습니다.
-- 표의 소요 시간은 각 리뷰 입력을 순차적으로 처리했다고 가정하여 개별 처리 시간을 합산한 누적 시간입니다. 실제 비즈니스 로직에서는 요청을 병렬로 처리할 수 있으므로 전체 작업의 실제 경과 시간은 단축될 수 있습니다.
+- 표의 소요 시간은 누적 시간입니다. 각 리뷰 입력을 순차적으로 처리한다고 가정했고 개별 처리 시간을 합산했습니다. 실제 비즈니스 로직에서는 요청을 병렬로 처리할 수 있으므로 전체 작업의 실제 경과 시간은 단축될 수 있습니다.
 
 
 | 작업(전체 749개)              |       총 입력 토큰 |         캐시 읽기 |      캐시 쓰기 |      비캐시 입력 |    추론/출력 토큰 |       입력 비용 |    추론/출력 비용 |    소요 시간 | 추출 속성 개수 |         총비용 |
@@ -77,3 +77,19 @@
     - **비구조화 추출(Representative Attribute)**: `uv run python extract_representative_attributes.py`
     - **구조화 추출(Opinion Units)**: `uv run python extract_opinion_units.py`
 - **검증**: `uv run pytest`
+
+<!-- HUMANIZE-SUMMARY
+후속 직접 수정(2026-10-03): 범용 포트폴리오 전환을 위한 내용·이미지 참조 변경을 반영했습니다. 아래 수치와 검증 결과는 최초 윤문 시점의 기록이며, 이번 직접 수정에는 윤문 스킬을 실행하거나 수치를 재산정하지 않았습니다.
+
+원본 글자수: 4,728자
+윤문본 글자수: 4,738자 (요약 주석 제외)
+변경률: 2.54% (SequenceMatcher, autojunk=False 기준)
+카테고리별 탐지: A-2 1→0(밀집 문단 4회→2회), A-18 7→0, C-11 2→0, D-3 1→0, F-4 1→1(기술 내용 앵커 보존)
+자체검증: 6/6 통과 (고유명사·수치·날짜·내용 앵커, 변경률, 장르, register, S1 잔존 0, 인공 표현 미주입)
+등급: B — S1 잔존 0건·S2 잔존 1건·자체검증 6/6이나 A 등급의 최소 변경률 10%에는 미달
+주요 변경 하이라이트:
+- "다음과 같은 문제가 발생합니다" → "문제도 생깁니다"
+- "추출하고, 프롬프트가" → "추출해 판단의 근거로 삼습니다. 프롬프트는"
+- "프롬프트를 통해" 반복 3회 → 1회
+- "개별 처리 시간을 합산한 누적 시간" → "누적 시간…개별 처리 시간을 합산했습니다"
+-->
